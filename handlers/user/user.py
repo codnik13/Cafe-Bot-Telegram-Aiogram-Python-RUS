@@ -34,6 +34,9 @@ async def menu(callback:CallbackQuery,state:FSMContext):
 async def menu(callback:CallbackQuery,state:FSMContext):
     session=session_maker()
     categories=(await session.scalars(select(Category).where(Category.belong==callback.data.lower()))).all()
+    if categories==[]:
+        await callback.answer('В базе денных ещё нет категорий')
+        return
     await session.close()
     await state.update_data(belong=callback.data.lower())
     await state.set_state(Menu.category)
